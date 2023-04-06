@@ -6,7 +6,7 @@ CLD
 ; T54 Bootloader (part 1)
 ; We load in the second part of the bootloader here.
 ; Part 2 loads in the filesystem. 
-
+; ===========================
 MOV SI, BootString
 CALL Print
 ; Read from hard drive
@@ -17,6 +17,7 @@ CALL ReadDrive
 MOV SI, ReadyString
 CALL Print
 JMP 0x7E00
+; ===========================
 ; HARD DRIVE FUNCTIONS
 
 ; Read From drive
@@ -53,9 +54,10 @@ JMP next_character
 exit_function:
 RET
 
-; lets get our data
+; Strings
 BootString db 'tBootLoader is loading...', 0
 ReadString db 'Reading from boot medium', 0
 ReadyString db 'Done, jumping.', 0
+; Fill all the empty space
 TIMES 510 - ($ - $$) db 0
 DW 0xAA55

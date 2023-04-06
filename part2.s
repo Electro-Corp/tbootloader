@@ -1,10 +1,11 @@
 [BITS 16]
+[ORG 0x7E00]
 ; Part 2 of the bootloader
 ; the first was so good, they had to make
 ; a sequel. 
 
 MOV SI, Part2Welcome ; Tell user Part 2 is loaded
-CALL Print ; Print the messagw
+CALL Print ; Print the message
 JMP $ ; Hang
 
 ; UTILS
