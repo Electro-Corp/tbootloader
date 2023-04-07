@@ -7,14 +7,16 @@ CLD
 ; We load in the second part of the bootloader here.
 ; Part 2 loads in the filesystem. 
 ; ===========================
+; Change Video mode
+MOV AH, 0x00
+MOV AL, 0x03
+INT 0x10
 MOV SI, BootString
 CALL Print
 ; Read from hard drive
 MOV AL, 1 ; Sectors to read
 MOV CL, 2 ; Sector
 CALL ReadDrive
-; Part 2 is ready
-MOV SI, ReadyString
 CALL Print
 JMP 0x7E00
 ; ===========================
@@ -35,7 +37,7 @@ MOV BX, 0x7E00
 INT 0x13
 RET
 
-; PRINT FUNCTIONS
+; CHAR FUNCTIONS
 PrintChar:
 MOV AH, 0x0E ; we need a char
 MOV BH, 0x00
@@ -54,10 +56,10 @@ JMP next_character
 exit_function:
 RET
 
+
 ; Strings
-BootString db 'tBootLoader is loading...', 0
-ReadString db 'Reading from boot medium', 0
-ReadyString db 'Done, jumping.', 0
+BootString db 'tBootLoader is loading stage 2 from boot medium',  0x0D, 0xA, 0
+ReadyString db 'Loaded.',  0x0D, 0xA,0
 ; Fill all the empty space
 TIMES 510 - ($ - $$) db 0
 DW 0xAA55
