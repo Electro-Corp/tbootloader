@@ -14,7 +14,7 @@ INT 0x10
 MOV SI, BootString
 CALL Print
 ; Read from hard drive
-MOV AL, 1 ; Sectors to read
+MOV AL, 3 ; Sectors to read
 MOV CL, 2 ; Sector
 CALL ReadDrive
 CALL Print
