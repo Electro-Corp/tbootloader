@@ -46,47 +46,7 @@ CLC ; Clear bit
 JNE .done
 MOV SI, FormatInProg
 CALL Print
-; get ready
-;MOV AH, 0x07
-;MOV AL, 0 ;
-;MOV CH, 0
-;MOV CL, 0
-;MOV DH, 0 
-;MOV BX, 0
-;INT 0x13
-CALL .testF
-.testF:
-MOV AH, 5
-MOV AL, 1
-MOV CX, 0
-MOV CL, 1
-MOV DH, 0
-MOV DL, 0
-MOV BYTE [buffer + 2], 0
-MOV SI, buffer
-MOV AX, [SI]
-MOV ES, AX
-MOV BX, 0
-MOV DL, 0
-CLC
-INT 13h
 JMP .done
-.formatInit:
-; get drive params
-MOV AH, 0x08
-INT 0x13
-MOV AL , CL
-MOV CH, 0
-MOV DH, 0
-MOV AH, 0x05
-;MOV BX, FormatBuffer
-CALL .formatLoop
-.formatLoop:
-INT 0x13
-INC CH
-CMP CH, 80
-JE .done
-JNE .formatLoop
 
 .done:
 ; check for errors
@@ -104,8 +64,8 @@ CALL Print
 CLC
 MOV AH, 0x00
 INT 0x13
-JMP .testF
-;JMP .done
+;JMP .testF
+JMP .done
 
 List:
 RET
