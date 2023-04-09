@@ -18,7 +18,7 @@ JNE Intro
 ;INT 0x16
 ; Load in filesystem disk
 MOV AL, 1 ; sectors to read
-MOV CL, 6 ; starting sector
+MOV CL, 5 ; starting sector
 MOV CH, 0 ; cylinder head
 MOV DH, 0 ; Head number 
 XOR BX, BX
@@ -64,6 +64,11 @@ MOV SI, buffer
 MOV DI, FormatCommand
 CALL StrCmp
 JC .Format
+; createfs
+MOV SI, buffer
+MOV DI, FsCommand
+CALL StrCmp
+JC .fs
 ; nothing else to check!
 MOV SI, NoCommandFound
 CALL Print
@@ -95,6 +100,10 @@ JMP ShowPrompt
 
 .Format:
 MOV BL, 1
+JMP 0xA510
+
+.fs:
+MOV BL, 2
 JMP 0xA510
 
 ShowPrompt:
@@ -227,4 +236,4 @@ buffer times 256 db 0
 BootCommand db 'boot', 0
 HelpCommand db 'help', 0
 FormatCommand db 'format', 0
-
+FsCommand db 'createfs', 0
