@@ -20,6 +20,9 @@ MOV AL, 10 ; Sectors to read
 MOV CL, 2 ; Sector
 CALL ReadDrive
 CALL Print
+; Make sure everything is setup
+MOV AH, 0
+MOV BL, 0
 JMP 0x7E00
 ; ===========================
 ; HARD DRIVE FUNCTIONS

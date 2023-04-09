@@ -4,18 +4,21 @@
 ; the first was so good, they had to make
 ; a sequel. 
 ; =============================
+; Check if a command was just run
+CMP BL, 99
+JE ShowPrompt
 ; Check if filesystem is loaded already
 CMP BYTE [0xA510] , 0
 ; if so, lets just go
 JNE Intro
 ; init fs
-MOV SI, FsString
-CALL Print
-MOV AH, 0
-INT 0x16
+;MOV SI, FsString
+;CALL Print
+;MOV AH, 0
+;INT 0x16
 ; Load in filesystem disk
 MOV AL, 1 ; sectors to read
-MOV CL, 1 ; starting sector
+MOV CL, 6 ; starting sector
 MOV CH, 0 ; cylinder head
 MOV DH, 0 ; Head number 
 XOR BX, BX
@@ -56,6 +59,11 @@ MOV SI, buffer
 MOV DI, HelpCommand
 CALL StrCmp
 JC .Help
+; Check against 'format'
+MOV SI, buffer
+MOV DI, FormatCommand
+CALL StrCmp
+JC .Format
 ; nothing else to check!
 MOV SI, NoCommandFound
 CALL Print
@@ -84,6 +92,10 @@ JMP ShowPrompt
 MOV SI, HelpString
 CALL Print
 JMP ShowPrompt
+
+.Format:
+MOV BL, 1
+JMP 0xA510
 
 ShowPrompt:
 MOV CL, 0
@@ -204,7 +216,7 @@ NewLine db '', 0x0D, 0xA, 0
 Part2Welcome db '====================================', 0x0D, 0xA,"T54 Bootloader has loaded.", 0x0D, 0xA,"Enter 'boot' at the prompt to boot, or type 'help' for help.",0x0D, 0xA, "====================================", 0x0D, 0xA, 0
 Prompt db 'TBoot>', 0
 BootString db 0x0D, 0xA,'Booting from selected medium', 0x0D, 0xA, 0
-HelpString db 0x0D, 0xA,'Commands: ', 0x0D, 0xA, 'boot: boots from the default medium, or the one selected', 0x0D, 0xA, 'help: show this help', 0x0D, 0xA, 0
+HelpString db 0x0D, 0xA,'Commands: ', 0x0D, 0xA, 'boot: boots from the default medium, or the one selected', 0x0D, 0xA,'format: formats the current disk', 0x0D, 0xA, 'help: show this help', 0x0D, 0xA, 0
 FsString db 0x0D, 0xA, 'Put Filesystem disk into drive and press any key to continue..', 0x0D, 0xA, 0
 NoCommandFound db 0x0D, 0xA,'Command not found.' , 0x0D, 0xA, 0
 ERR_C db 0x0D, 0xA, 'ERR_LOAD_FS', 0x0D, 0xA, 0
@@ -214,5 +226,5 @@ buffer times 256 db 0
 ; Commands
 BootCommand db 'boot', 0
 HelpCommand db 'help', 0
-
+FormatCommand db 'format', 0
 
