@@ -46,7 +46,44 @@ CLC ; Clear bit
 JNE .done
 MOV SI, FormatInProg
 CALL Print
-JMP .done
+CALL .formatInit
+.formatInit:
+MOV AH, 0x05 ; format
+MOV DH, 1 ; head
+MOV CH, 0 ; Track
+MOV AL, 1 ; sector
+MOV BX, buffer
+
+.formatHead:
+MOV CH, 0
+MOV [buffer + 2], DH
+CALL .formatTrack
+CMP DH, 2
+JE .done
+INC DH
+JMP .formatHead
+
+.formatTrack:
+MOV AL, 18
+MOV [buffer + 1], CH
+MOV BX, buffer
+CALL .formatSector
+CMP CH, 80
+JE .retC
+INC CH
+JMP .formatTrack
+
+.formatSector:
+;CMP AL, 18
+;JE .retC
+INT 0x13
+INC AL
+;JMP .formatSector
+RET
+.retC:
+RET
+
+;JMP .done
 
 .done:
 ; check for errors
@@ -54,7 +91,7 @@ JC .error
 ; We're done
 CMP BL, 2
 JE .exit
-MOV BL, 99
+MOV BL, 99 ; tell the main part we're done
 JMP 0x7E00 ; jump back to the main
 .exit:
 RET
@@ -113,6 +150,6 @@ CreatingFS db 'Creating FS, please wait.', 0x0D, 0xA, 0
 
 buffer:
 db 0 ; track num
-db 0 ; head num
+db 1 ; head num
 db 1 ; sector num
 db 2 ; byte per sector

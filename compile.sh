@@ -12,4 +12,5 @@ dd if=parts/fs.o of=boot.bin bs=512 seek=4
 echo "Creating Kernel floppy"
 #dd if=kernel bs=512 seek=0 of=t54.bin
 #dd if=kernel of=boot.bin bs=512 seek=2 conv=notrunc
-qemu-system-x86_64 -fda boot.bin
+#qemu-system-x86_64 -drive file=boot.bin,format=raw,index=0,media=disk
+bochs -q
