@@ -48,12 +48,16 @@ MOV SI, FormatInProg
 CALL Print
 CALL .formatInit
 .formatInit:
+; get param
+MOV BL, 10
+; 
 MOV AH, 0x05 ; format
 MOV DH, 1 ; head
-MOV CH, 0 ; Track
-MOV AL, 1 ; sector
-MOV BX, buffer
-
+MOV CH, 0 ; Cylinder
+MOV AL, 18 ; sectors
+MOV BX, Buffer
+MOV ES, BX
+CALL .formatHead
 .formatHead:
 MOV CH, 0
 CALL .formatTrack
@@ -63,15 +67,22 @@ INC DH
 JMP .formatHead
 
 .formatTrack:
-MOV AL, 18
-MOV BX, Buffer
+CLC
 INT 0x13
-CMP CH, 80
+JC .checkErrorQuick
+CMP CH, BL
 JE .retC
 INC CH
 JMP .formatTrack
 
+.checkErrorQuick:
+MOV SI, FormatError
+CALL Print
+JMP .formatHead
+RET
+
 .formatSector:
+
 ;CMP AL, 18
 ;JE .retC
 INT 0x13
