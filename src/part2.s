@@ -17,7 +17,7 @@ JNE Intro
 ;MOV AH, 0
 ;INT 0x16
 ; Load in filesystem disk
-MOV AL, 1 ; sectors to read
+MOV AL, 3 ; sectors to read
 MOV CL, 5 ; starting sector
 MOV CH, 0 ; cylinder head
 MOV DH, 0 ; Head number 
