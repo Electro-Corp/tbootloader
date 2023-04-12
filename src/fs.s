@@ -49,7 +49,7 @@ CALL Print
 CALL .formatInit
 .formatInit:
 ; get param
-MOV BL, 10
+MOV BL, 80
 ; 
 MOV AH, 0x05 ; format
 MOV DH, 1 ; head
@@ -58,10 +58,10 @@ MOV AL, 18 ; sectors
 MOV BX, Buffer
 MOV ES, BX
 CALL .formatHead
+
 .formatHead:
-MOV CH, 0
 CALL .formatTrack
-CMP DH, 2
+CMP DH, 80
 JE .done
 INC DH
 JMP .formatHead
